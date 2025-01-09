@@ -1,30 +1,36 @@
 // Create Web Server
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-var fs = require('fs');
-var path = require('path');
+// npm install express
+const express = require('express')
+const app = express()
+const port = 3000
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+// Use middleware to parse JSON
+app.use(express.json())
 
-app.get('/comments', function(req, res) {
-	fs.readFile(__dirname + '/comments.json', function(err, data) {
-		res.setHeader('Content-Type', 'application/json');
-		res.send(data);
-	});
-});
+// Use middleware to parse URL encoded data
+app.use(express.urlencoded({extended: true}))
 
-app.post('/comments', function(req, res) {
-	fs.readFile(__dirname + '/comments.json', function(err, data) {
-		var comments = JSON.parse(data);
-		comments.push(req.body);
-		fs.writeFile(__dirname + '/comments.json', JSON.stringify(comments, null, 4), function(err) {
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify(comments));
-		});
-	});
-});
+// Create a route
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
 
-app.listen(3000);
-console.log('Server is running on port 3000');
+// Create a route that accepts a parameter
+app.get('/:name', (req, res) => {
+  res.send('Hello ' + req.params.name)
+})
+
+// Create a route that accepts a query parameter
+app.get('/query', (req, res) => {
+  res.send('Hello ' + req.query.name)
+})
+
+// Create a route that accepts a POST request
+app.post('/post', (req, res) => {
+  res.send('Hello ' + req.body.name)
+})
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server listening at http://localhost:${port}`)
+})
